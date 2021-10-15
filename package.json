@@ -1,7 +1,7 @@
 {
 	"name": "vue-i18n-helper",
 	"displayName": "vue-i18n-helper",
-	"description": "Utility to localize an existing Vue app using i18n plugin",
+	"description": "VS Code plugin to localize an existing Vue app using i18n",
 	"author": {"name": "vfportero"},
 	"version": "0.0.1",
 	"engines": {
@@ -18,7 +18,7 @@
 		"commands": [
 			{
 				"command": "vue-i18n-helper.localize",
-				"title": "Vue I18n Helper: Lozalize text literal"
+				"title": "Vue I18n Helper: Localize text literal"
 			}
 		]
 	},
