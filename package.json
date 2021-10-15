@@ -15,6 +15,18 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "Vue I18n Helper",
+			"properties": {
+				"vuei18nhelper.languages": {
+					"type": "string",
+					"default": "es,en",
+					"pattern": "[a-z]{2},",
+					"patternErrorMessage": "The language code must be the two letter ISO",
+					"description": "Language code list to localize (comma separated)."
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "vue-i18n-helper.localize",

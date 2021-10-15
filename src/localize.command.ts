@@ -63,10 +63,13 @@ export class LocalizeCommand {
       }				
     }
 
-    let i18nTranslations: LocaleMessages = {
-      ['es']: {},
-      ['eu']: {}
-    };
+    let i18nTranslations: LocaleMessages = {};
+    
+    var languages = vscode.workspace.getConfiguration('vuei18nhelper').languages;
+
+    for (const lang of languages.split(',')) {
+      i18nTranslations[lang] = {};
+    }
 
     let i18nTagRange: vscode.Range;
 
