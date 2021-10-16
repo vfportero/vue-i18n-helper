@@ -11,7 +11,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vue-i18n-helper.localize"
+		"onCommand:vue-i18n-helper.localize",
+		"onCommand:vue-i18n-helper.report"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -31,6 +32,10 @@
 			{
 				"command": "vue-i18n-helper.localize",
 				"title": "Vue I18n Helper: Localize text literal"
+			},
+			{
+				"command": "vue-i18n-helper.report",
+				"title": "Vue I18n Helper: Generate report with all keys"
 			}
 		]
 	},

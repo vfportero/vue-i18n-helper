@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import Helpers from './helpers';
 import { LocaleMessages } from './models';
 
 export class LocalizeCommand {
@@ -50,18 +51,7 @@ export class LocalizeCommand {
   }
 
   private getCurrentFileTranslations(document: vscode.TextDocument): { i18nTranslations: LocaleMessages, i18nTagRange: vscode.Range }   {
-    let i18nTagStart;
-    let i18nTagEnd;
-
-    for (let lineNumber = 0; lineNumber < document.lineCount; lineNumber++) {
-      const line = document.lineAt(lineNumber);
-      if (line.text.match(/<i18n>/)) {
-        i18nTagStart = line.range.start;
-      }
-      if (line.text.match(/<\/i18n>/)) {
-        i18nTagEnd = line.range.end;
-      }				
-    }
+    let i18TagContent = Helpers.geti18nTagContent(document);
 
     let i18nTranslations: LocaleMessages = {};
     
@@ -73,15 +63,11 @@ export class LocalizeCommand {
 
     let i18nTagRange: vscode.Range;
 
-    if (i18nTagStart && i18nTagEnd) {
-      i18nTagRange = new vscode.Range(i18nTagStart, i18nTagEnd);
-      let i18nTag = document.getText(i18nTagRange);
-      
-      let i18nValues = i18nTag.replace('<i18n>', '');
-      i18nValues = i18nValues.replace('</i18n>', '');
+    if (i18TagContent !== null) {
+      i18nTagRange = i18TagContent.i18nTagRange;
       i18nTranslations = {
         ...i18nTranslations,
-        ...JSON.parse(i18nValues)
+        ...i18TagContent.i18nTranslations
       };
     } else {
       i18nTagRange = new vscode.Range(new vscode.Position(document.lineCount,0), new vscode.Position(document.lineCount,0));
