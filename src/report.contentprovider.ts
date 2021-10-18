@@ -2,10 +2,17 @@ import * as vscode from 'vscode';
 import Helpers from './helpers';
 import { LocaleFiles, LocaleMessages } from './models';
 
-export class ReportCommand {
+export class ReportContentProvider implements vscode.TextDocumentContentProvider {
+  // emitter and its event
+  onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
+  onDidChange = this.onDidChangeEmitter.event;
+
+  async provideTextDocumentContent(): Promise<string> {
+    return await this.generateKeysReport();
+  }
 
 
-  public async generateKeysReport() {
+  private async generateKeysReport() : Promise<string> {
     let localizationKeysReport: LocaleFiles = {};
     
     let vueFiles = await vscode.workspace.findFiles('**/*.vue', '**/node_modules/**');
@@ -17,7 +24,7 @@ export class ReportCommand {
       ... await this.getLocalizationKeys(localeFiles, 'locale'),
     };
 
-    console.log(JSON.stringify(localizationKeysReport, null, 2));
+    return JSON.stringify(localizationKeysReport, null, 2);
   }
 
   private async getLocalizationKeys(files: vscode.Uri[], fileType: 'vue' | 'locale'): Promise<LocaleFiles> {

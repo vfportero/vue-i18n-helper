@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { LocalizeCommand } from './localize.command';
-import { ReportCommand } from './report.command';
+import { ReportContentProvider } from './report.contentprovider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -20,8 +20,12 @@ export function activate(context: vscode.ExtensionContext) {
 		new LocalizeCommand().localizeText(textEditor);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('vue-i18n-helper.report', async () => {	
-		await new ReportCommand().generateKeysReport();
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('vue-i18n-helper.report', new ReportContentProvider()));
+
+	context.subscriptions.push(vscode.commands.registerCommand('vue-i18n-helper.generatereport', async () => {
+		const uri = vscode.Uri.parse('vue-i18n-helper.report:vuei18n-report.json');
+		const doc = await vscode.workspace.openTextDocument(uri);
+		await vscode.window.showTextDocument(doc, { preview: false });
 	}));
 
 }
