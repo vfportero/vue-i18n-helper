@@ -2,8 +2,16 @@
 	"name": "vue-i18n-helper",
 	"displayName": "vue-i18n-helper",
 	"description": "VS Code plugin to localize an existing Vue app using i18n",
-	"author": {"name": "vfportero"},
+	"author": {"name": "Víctor Fernándex Portero"},
+	"publisher": "vfportero",
 	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/vfportero/vue-i18n-helper"
+	},
+	"bugs": {
+		"url": "https://github.com/vfportero/vue-i18n-helper/issues"
+	},
 	"engines": {
 		"vscode": "^1.61.0"
 	},
