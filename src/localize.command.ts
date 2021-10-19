@@ -11,22 +11,40 @@ export class LocalizeCommand {
 
     textEditor.edit(editBuilder => {
       textEditor.selections.forEach(selection => {
-        const textToLocalize = this.replaceSelector(document, editBuilder, selection);
+        if (!selection.isSingleLine) {
+          vscode.window.showInformationMessage(`⚠️ Extract multiline literals is not allowed`);
+        } else {
+          const vueBlock = this.getVueBlock(document, selection);
 
-        let currentFileTranslations = this.getCurrentFileTranslations(document);
-        
-        currentFileTranslations.i18nTranslations['es'][textToLocalize] = textToLocalize;
-        currentFileTranslations.i18nTranslations['eu'][textToLocalize] = textToLocalize;
-        let newi18nTag = `<i18n>\r\n${JSON.stringify(currentFileTranslations.i18nTranslations, null, 2)}\r\n</i18n>`;
+          const textToLocalize = this.replaceSelector(document, editBuilder, selection, vueBlock);
 
-        editBuilder.replace(currentFileTranslations.i18nTagRange, newi18nTag);
-				
-        vscode.window.showInformationMessage(`Added localized key '${textToLocalize}'`);
+          let currentFileTranslations = this.getCurrentFileTranslations(document);
+          
+          currentFileTranslations.i18nTranslations['es'][textToLocalize] = textToLocalize;
+          currentFileTranslations.i18nTranslations['eu'][textToLocalize] = textToLocalize;
+
+          let newi18nTag = `${currentFileTranslations.i18nTagExists === false ? '\r\n\r\n': ''}<i18n>\r\n${JSON.stringify(currentFileTranslations.i18nTranslations, null, 2)}\r\n</i18n>`;
+  
+          editBuilder.replace(currentFileTranslations.i18nTagRange, newi18nTag);
+          
+          vscode.window.showInformationMessage(`Added localized key '${textToLocalize}'`);
+        }
       });
     });
   }
 
-  private replaceSelector(document: vscode.TextDocument, editBuilder: vscode.TextEditorEdit, selection: vscode.Selection): string {
+  private getVueBlock(document: vscode.TextDocument, selection: vscode.Selection): 'script' | 'template' {
+    for (let line = selection.end.line; line < document.lineCount; line++) {
+      const lineRange = document.lineAt(line);
+      if (lineRange.text.match(/<\/template>/)) {
+        return 'template';
+      }
+    }
+
+    return 'script';
+  }
+
+  private replaceSelector(document: vscode.TextDocument, editBuilder: vscode.TextEditorEdit, selection: vscode.Selection, vueBlock: 'script' | 'template'): string {
     let textToReplace = document.getText(selection);
     const inlinedVariableRegExp = new RegExp(/.({{[^}]*}})/);
     let inlineVariableNames = [];
@@ -44,13 +62,25 @@ export class LocalizeCommand {
     if (inlineVariableNames.length) {
       editBuilder.replace(selection, `{{ $t(\'${textToReplace}\', { ${inlineVariableNames.join(',')} })}}`);
     } else {
-      editBuilder.replace(selection, `{{ $t(\'${textToReplace}\')}}`);
+      switch (vueBlock) {
+        case 'script': {
+          const start = new vscode.Position(selection.start.line, Math.max(selection.start.character - 1, 0));
+          const end = new vscode.Position(selection.end.line, selection.end.character + 1);
+
+          editBuilder.replace(new vscode.Selection(start, end), `this.$t(\'${textToReplace}\')`);
+          break;
+        }
+        case 'template': {
+          editBuilder.replace(selection, `{{ $t(\'${textToReplace}\')}}`);
+          break;
+        }
+      }
     }
     
     return textToReplace;
   }
 
-  private getCurrentFileTranslations(document: vscode.TextDocument): { i18nTranslations: LocaleMessages, i18nTagRange: vscode.Range }   {
+  private getCurrentFileTranslations(document: vscode.TextDocument): { i18nTranslations: LocaleMessages, i18nTagRange: vscode.Range, i18nTagExists: boolean }   {
     let i18TagContent = Helpers.geti18nTagContent(document);
 
     let i18nTranslations: LocaleMessages = {};
@@ -62,6 +92,7 @@ export class LocalizeCommand {
     }
 
     let i18nTagRange: vscode.Range;
+    let i18nTagExists = i18TagContent !== null;
 
     if (i18TagContent !== null) {
       i18nTagRange = i18TagContent.i18nTagRange;
@@ -73,6 +104,6 @@ export class LocalizeCommand {
       i18nTagRange = new vscode.Range(new vscode.Position(document.lineCount,0), new vscode.Position(document.lineCount,0));
     }
 
-    return { i18nTranslations, i18nTagRange };
+    return { i18nTranslations, i18nTagRange, i18nTagExists };
   }
 }
