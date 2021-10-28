@@ -4,6 +4,7 @@ import { LocaleMessages } from './models';
 
 export class LocalizeCommand {
 
+  languages = vscode.workspace.getConfiguration('vuei18nhelper').languages.split(',');
 
   public localizeText(textEditor: vscode.TextEditor) {
 
@@ -19,9 +20,11 @@ export class LocalizeCommand {
           const textToLocalize = this.replaceSelector(document, editBuilder, selection, vueBlock);
 
           let currentFileTranslations = this.getCurrentFileTranslations(document);
+
+          for (const lang of this.languages) {
+            currentFileTranslations.i18nTranslations[lang][textToLocalize] = textToLocalize;  
+          };
           
-          currentFileTranslations.i18nTranslations['es'][textToLocalize] = textToLocalize;
-          currentFileTranslations.i18nTranslations['eu'][textToLocalize] = textToLocalize;
 
           let newi18nTag = `${currentFileTranslations.i18nTagExists === false ? '\r\n\r\n': ''}<i18n>\r\n${JSON.stringify(currentFileTranslations.i18nTranslations, null, 2)}\r\n</i18n>`;
   
@@ -85,9 +88,7 @@ export class LocalizeCommand {
 
     let i18nTranslations: LocaleMessages = {};
     
-    var languages = vscode.workspace.getConfiguration('vuei18nhelper').languages;
-
-    for (const lang of languages.split(',')) {
+    for (const lang of this.languages) {
       i18nTranslations[lang] = {};
     }
 

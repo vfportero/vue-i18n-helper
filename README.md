@@ -6,7 +6,7 @@ This plugin allow a useful tool to create localizated keys to your Vue applicati
 
 ### Localize text literal
 
-- Extract literal text to a localized key in the `<i18n>` tag of your `.vue` file (from <template> and <script> tags)
+- Extract literal text to a localized key in the `<i18n>` tag of your `.vue` file (from `<template>` and `<script>` tags)
 
 ![localize](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/localize.gif)
 ![localize-script](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/localize-script.gif)
@@ -35,15 +35,3 @@ This extension contributes the following settings:
 * `vuei18nhelper.languages`: Language keys (comma separated)
 
 ![settings](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/settings.png)
-
-
-
-## Release Notes
-
-### 0.0.2
-
-Add logic to localize text inside <script> tag
-
-### 0.0.1
-
-Initial release
