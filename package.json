@@ -4,7 +4,7 @@
 	"description": "VS Code plugin to localize an existing Vue app using i18n",
 	"author": {"name": "Víctor Fernández Portero"},
 	"publisher": "vfportero",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/vfportero/vue-i18n-helper"
@@ -20,7 +20,7 @@
 	],
 	"activationEvents": [
 		"onCommand:vue-i18n-helper.localize",
-		"onCommand:vue-i18n-helper.generatereport"
+		"onCommand:vue-i18n-helper.export"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -42,8 +42,8 @@
 				"title": "Vue I18n Helper: Localize text literal"
 			},
 			{
-				"command": "vue-i18n-helper.generatereport",
-				"title": "Vue I18n Helper: Generate report with all keys"
+				"command": "vue-i18n-helper.export",
+				"title": "Vue I18n Helper: Export json report with all keys"
 			}
 		]
 	},

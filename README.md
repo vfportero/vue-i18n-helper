@@ -11,17 +11,21 @@ This plugin allow a useful tool to create localizated keys to your Vue applicati
 ![localize](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/localize.gif)
 ![localize-script](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/localize-script.gif)
 
-- Also allows extraction of inlined variable texts and HTML:
+- Extraction of inlined variable texts and HTML:
 
 ![localize-inlined-variable](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/localize-with-inlined-variable.gif)
 
+- Extracion of inlined HTML to replace by span (only in <vue> tag)
+
+![localize-inlined-html](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/localize-inline-html.gif)
+
 This command gets the selected text and create a new key on the existent `<i18n>` (or create new one if not exists) in every configured language on the plugin settings.
 
-### Generate localized keys report
+### Export localized keys to JSON
 
-This command generates a json report with all localized keys:
+This command generates a JSON file with all localized keys:
 
-![generate-report](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/generate-report.gif)
+![export](https://raw.githubusercontent.com/vfportero/vue-i18n-helper/master/export.gif)
 
 ## Requirements
 

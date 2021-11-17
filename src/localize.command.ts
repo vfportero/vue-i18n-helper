@@ -5,6 +5,8 @@ import { LocaleMessages } from './models';
 export class LocalizeCommand {
 
   languages = vscode.workspace.getConfiguration('vuei18nhelper').languages.split(',');
+  inlinedVariableRegExp = new RegExp(/.({{[^}]*}})/);
+  inlinedHtmlRegExp = new RegExp(/.<[^>]*>/);
 
   public localizeText(textEditor: vscode.TextEditor) {
 
@@ -49,17 +51,17 @@ export class LocalizeCommand {
 
   private replaceSelector(document: vscode.TextDocument, editBuilder: vscode.TextEditorEdit, selection: vscode.Selection, vueBlock: 'script' | 'template'): string {
     let textToReplace = document.getText(selection);
-    const inlinedVariableRegExp = new RegExp(/.({{[^}]*}})/);
+    
     let inlineVariableNames = [];
 
-    let inlinedVariableMatch = inlinedVariableRegExp.exec(textToReplace);
+    let inlinedVariableMatch = this.inlinedVariableRegExp.exec(textToReplace);
 
     while (inlinedVariableMatch !== null) {   
       let inlineVariable = inlinedVariableMatch[1];
       const inlineVariableName = inlineVariable.replace('{{', '').replace('}}', '');
       inlineVariableNames.push(inlineVariableName);
       textToReplace = textToReplace.replace(inlineVariable, `{${inlineVariableName}}`);
-      inlinedVariableMatch = inlinedVariableRegExp.exec(textToReplace);
+      inlinedVariableMatch = this.inlinedVariableRegExp.exec(textToReplace);
     }
 
     if (inlineVariableNames.length) {
@@ -74,7 +76,12 @@ export class LocalizeCommand {
           break;
         }
         case 'template': {
-          editBuilder.replace(selection, `{{ $t(\'${textToReplace}\')}}`);
+          if (this.inlinedHtmlRegExp.test(textToReplace)) {
+            editBuilder.replace(selection, `<span v-html="$t(\'${textToReplace}\')"></span>`);
+          } else {
+            editBuilder.replace(selection, `{{ $t(\'${textToReplace}\')}}`);
+          }
+          
           break;
         }
       }

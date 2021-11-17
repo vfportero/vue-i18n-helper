@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('vue-i18n-helper.report', new ReportContentProvider()));
 
-	context.subscriptions.push(vscode.commands.registerCommand('vue-i18n-helper.generatereport', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('vue-i18n-helper.export', async () => {
 		const uri = vscode.Uri.parse('vue-i18n-helper.report:vuei18n-report.json');
 		const doc = await vscode.workspace.openTextDocument(uri);
 		await vscode.window.showTextDocument(doc, { preview: false });
